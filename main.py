@@ -1,4 +1,5 @@
 import logging
+from decouple import config
 
 # Logging
 global logger 
@@ -11,7 +12,7 @@ logger.addHandler(log_stream)
 logger.setLevel(logging.DEBUG)
 #
 
-__TELEGRAM_TOKEN = "***"
+__TELEGRAM_TOKEN = config("TELEGRAM_TOKEN")
 
 def main():
 
