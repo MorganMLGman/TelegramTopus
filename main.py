@@ -1,5 +1,6 @@
 import logging
-from decouple import config
+
+from bot import TelegramBot
 
 # Logging
 global logger 
@@ -12,9 +13,11 @@ logger.addHandler(log_stream)
 logger.setLevel(logging.DEBUG)
 #
 
-__TELEGRAM_TOKEN = config("TELEGRAM_TOKEN")
 
-def main():
+
+def main(): 
+    bot = TelegramBot()
+    bot.start()
 
 if __name__ == "__main__":
     main()
