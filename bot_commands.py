@@ -33,3 +33,21 @@ Minutes: {mm}
 Seconds: {ss}"""
     
     await context.bot.send_message(chat_id=update.effective_chat.id, text=out)
+    
+async def get_load(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    load1m, load5m, load15m = Commands.get_load()
+    
+    out = f"""
+Average load:
+1 minute: {round(load1m, 2)}%
+5 minutes: {round(load5m, 2)}%
+15 minutes: {round(load15m, 2)}%"""
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=out)
+    
+async def get_temps(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    temps = Commands.get_temp()
+    if temps:
+        pass
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="")

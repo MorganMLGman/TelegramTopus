@@ -10,12 +10,13 @@ class TelegramBot:
     def __init__(self) -> None:
         self.application = ApplicationBuilder().token(self.__TELEGRAM_TOKEN).build()
     
-        start_handler = CommandHandler('start', bot_cmd.start)
-        time_handler = CommandHandler('time', bot_cmd.get_time)
-        uptime_handler = CommandHandler('uptime', bot_cmd.get_uptime)
-        self.application.add_handler(start_handler)
-        self.application.add_handler(time_handler)
-        self.application.add_handler(uptime_handler)
+        self.application.add_handlers([
+            CommandHandler('start', bot_cmd.start),
+            CommandHandler('time', bot_cmd.get_time),
+            CommandHandler('uptime', bot_cmd.get_uptime),
+            CommandHandler('load', bot_cmd.get_load),
+            CommandHandler('cpu_temp', bot_cmd.get_temps)
+        ])
         
     def start(self):
         self.application.run_polling()
