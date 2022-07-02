@@ -1,0 +1,8 @@
+start - Print this text 🧠
+time - Get current server time
+uptime - Get server uptime
+load - Get server average usage
+cpu_temp - Get server CPU temperature
+ram_usage - Get server RAM usage
+disk_usage - Get server disk usage, if multiple disks available all will be listed
+status - uptime/load/cpu_temp/ram_usage/disk_usage all in one message
