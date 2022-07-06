@@ -39,13 +39,12 @@ class Commands:
                 for key, val in temps.items():
                     if "wifi" in key.lower() or "wireless" in key.lower():
                         ret["wifi_card"] = val[0].current
-                    if "nvme" in key.lower():
+                    elif "nvme" in key.lower():
                         ret["nvme_disk"] = val[0].current
-                    if "core" in key.lower():
+                    elif "core" in key.lower():
                         core = {}
                         for item in val:
                             core[item.label] = item.current
                         ret["cpu"] = core
                 return ret
-            
         return None

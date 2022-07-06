@@ -48,6 +48,24 @@ Average load:
 async def get_temps(update: Update, context: ContextTypes.DEFAULT_TYPE):
     temps = Commands.get_temp()
     if temps:
-        pass
+        out = "Temperature:\n"
+        for key, val in temps.items():
+            match(key.lower()):
+                case "wifi_card":
+                    out += f"WiFi card: {val}\n"
+                
+                case "cpu":
+                    out += "CPU:\n"
+                    if isinstance(val, dict):
+                        for key2, val2 in val.items():
+                            out += f"\t\t{key2}: {val2}\n"
+                    else: 
+                        out += f"\t\tNo data available.\n"
+                
+                case "nvme_disk":
+                    out += f"NVMe Disk: {val}\n"
+            
+        await context.bot.send_message(chat_id=update.effective_chat.id, text = out)
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="")
+        await context.bot.send_message(chat_id=update.effective_chat.id,
+                                       text="Unfortunately, the sensor data could not be read or your operating system is not supported.")
