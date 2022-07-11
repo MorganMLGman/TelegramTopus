@@ -1,6 +1,7 @@
-from telegram import Update
+from turtle import home
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
-from commands import Commands
+from commands import Commands, HostSystem
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -35,15 +36,32 @@ Seconds: {ss}"""
     await context.bot.send_message(chat_id=update.effective_chat.id, text=out)
     
 async def get_load(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    load1m, load5m, load15m = Commands.get_load()
-    
-    out = f"""
+    """Function reads system load using differents methods for different host systems,
+    and sends it in a message.
+    """
+    if Commands.host_system == None:
+        await context.bot.send_message(chat_id=update.effective_chat.id, 
+                                       text="Unfortunately you need to set host system first, \
+                                           before using this command. You can do this with /set_host")
+
+    elif (HostSystem.FEDORA == Commands.host_system or
+          HostSystem.UBUNTU == Commands.host_system or
+          HostSystem.RASPBIAN == Commands.host_system):
+          
+            load1m, load5m, load15m = Commands.get_load()    
+            out = f"""
 Average load:
 1 minute: {round(load1m, 2)}%
 5 minutes: {round(load5m, 2)}%
 15 minutes: {round(load15m, 2)}%"""
 
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=out)
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=out)
+            
+    elif HostSystem.WINDOWS == Commands.host_system:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Please wait 10 seconds, measurement started")
+        load, _, _ = Commands.get_load()
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Average CPU usage: {round(load, 2)}%")
+        
     
 async def get_temps(update: Update, context: ContextTypes.DEFAULT_TYPE):
     temps = Commands.get_temp()
@@ -69,3 +87,32 @@ async def get_temps(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id,
                                        text="Unfortunately, the sensor data could not be read or your operating system is not supported.")
+        
+async def set_host(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """set_host Replies with inline keyboard"""
+    keyboard = []
+    
+    for i in HostSystem:
+        keyboard.append([InlineKeyboardButton(i.name, callback_data=i.name)])
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    await update.message.reply_text("Please choose running OS:", reply_markup=reply_markup)
+    
+async def keyboard_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+    
+    await query.answer()
+    
+    match(query.data):
+        case "FEDORA":
+            Commands.host_system = HostSystem.FEDORA
+        case "UBUNTU":
+            Commands.host_system = HostSystem.UBUNTU
+        case "RASPBIAN":
+            Commands.host_system = HostSystem.RASPBIAN
+        case "WINDOWS":
+            Commands.host_system = HostSystem.WINDOWS           
+    
+    await query.edit_message_text(text=f"Selected OS: {query.data}")

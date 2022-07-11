@@ -3,8 +3,10 @@ import logging
 from bot import TelegramBot
 
 # Logging
-global logger 
-logger = logging.getLogger("telegram_main")
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logger = logging.getLogger("telegram_bot")
 log_stream = logging.StreamHandler()
 log_format = logging.Formatter('%(asctime)s - %(funcName)s - %(levelname)s - %(message)s')
 log_stream.setFormatter(log_format)

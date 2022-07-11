@@ -1,5 +1,5 @@
 from decouple import config
-from telegram.ext import ApplicationBuilder, CommandHandler
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler
 
 import bot_commands as bot_cmd
 
@@ -15,7 +15,9 @@ class TelegramBot:
             CommandHandler('time', bot_cmd.get_time),
             CommandHandler('uptime', bot_cmd.get_uptime),
             CommandHandler('load', bot_cmd.get_load),
-            CommandHandler('cpu_temp', bot_cmd.get_temps)
+            CommandHandler('cpu_temp', bot_cmd.get_temps),
+            CommandHandler('set_host', bot_cmd.set_host),
+            CallbackQueryHandler(bot_cmd.keyboard_handler)
         ])
         
     def start(self):
